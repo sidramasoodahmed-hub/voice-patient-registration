@@ -9,6 +9,9 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./patients.db")
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+if DATABASE_URL.startswith("postgresql://"):
+    # force the psycopg v3 driver we install in requirements.txt
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg://", 1)
 
 engine = create_engine(
     DATABASE_URL,
