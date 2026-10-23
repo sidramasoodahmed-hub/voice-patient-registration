@@ -229,7 +229,10 @@ async def vapi_webhook(request: Request, x_vapi_secret: Optional[str] = Header(N
         db.commit()
         log.info("CALL_END call=%s reason=%s summary=%s", call_id, row.ended_reason, row.summary)
     return {}
-
+@app.post("/", include_in_schema=False)
+async def vapi_webhook_root(request: Request, x_vapi_secret: Optional[str] = Header(None),
+                            db: Session = Depends(get_db)):
+    return await vapi_webhook(request, x_vapi_secret, db)
 
 # ---------- Dashboard ----------
 @app.get("/", include_in_schema=False)
