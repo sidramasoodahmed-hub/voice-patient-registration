@@ -80,7 +80,13 @@ def get_patient_or_404(db: Session, pid: str) -> Patient:
 # ---------- REST API ----------
 @app.get("/health")
 def health():
-    return respond({"status": "ok"})
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        return respond({"status": "ok", "db": "ok"})
+    except Exception:
+        log.exception("Health check: database unreachable")
+        return respond({"status": "degraded", "db": "down"}, 503)
 
 
 @app.get("/patients")
