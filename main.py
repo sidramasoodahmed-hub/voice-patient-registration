@@ -16,6 +16,8 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from db import CallLog, Patient, get_db, init_db
 from schemas import PatientCreate, PatientUpdate, normalize_phone, parse_dob
+from sqlalchemy import text
+from db import engine
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 log = logging.getLogger("patient-agent")
