@@ -16,7 +16,12 @@ if DATABASE_URL.startswith("postgresql://"):
 engine = create_engine(
     DATABASE_URL,
     pool_pre_ping=True,
-    connect_args={"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {},
+    pool_recycle=240,  # drop connections before Neon's idle suspend kills them
+    connect_args=(
+        {"check_same_thread": False}
+        if DATABASE_URL.startswith("sqlite")
+        else {"connect_timeout": 20}  # allow time for Neon to wake up
+    ),
 )
 SessionLocal = sessionmaker(bind=engine, expire_on_commit=False)
 
